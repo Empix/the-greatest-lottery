@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 
 import Authentication from './pages/Authentication';
 import ResetPassword from './pages/ResetPassword';
+import SignUp from './pages/SignUp';
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
       <Routes>
         <Route path="/authentication" element={<Authentication />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/register" element={<SignUp />} />
       </Routes>
     </Layout>
   );
