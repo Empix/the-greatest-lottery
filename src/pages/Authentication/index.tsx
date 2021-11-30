@@ -7,6 +7,7 @@ import { Container, Box } from './styles';
 import { Card } from '../../components/UI/styles';
 
 import AppTitle from '../../components/AppTitle';
+import AuthenticationForm from '../../components/Forms/AuthenticationForm';
 
 const Authentication: React.FC = () => {
   return (
@@ -16,18 +17,10 @@ const Authentication: React.FC = () => {
         <h1>Authentication</h1>
 
         <Card>
-          <form>
-            <input type="text" id="email" placeholder="Email" />
-            <input type="password" id="password" placeholder="Password" />
-            <Link to="/reset-password">I forgot my password</Link>
-            <button>
-              <span>Log In</span>
-              <IoArrowForward />
-            </button>
-          </form>
+          <AuthenticationForm />
         </Card>
 
-        <Link to="#">
+        <Link to="/register">
           <span>Sign Up</span>
           <IoArrowForward />
         </Link>
