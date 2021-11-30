@@ -12,4 +12,8 @@ export default createGlobalStyle`
     background-color: #F7F7F7;
     font-family: 'Work Sans', sans-serif;
   }
+
+  ul {
+    list-style: none;
+  }
 `;
