@@ -4,6 +4,7 @@ export const Card = styled.div`
   background-color: #ffffff;
   border: 1px solid #dddddd;
   border-radius: 14px;
+  overflow: hidden;
 `;
 
 type GameButtonProps = {
@@ -22,4 +23,25 @@ export const GameButton = styled.button<GameButtonProps>`
   padding: 8px 18px;
   border-radius: 100px;
   cursor: pointer;
+`;
+
+type ButtonProps = {
+  outlined?: boolean;
+  padding?: string;
+};
+
+export const Button = styled.button<ButtonProps>`
+  background-color: ${(p) => (p.outlined ? 'transparent' : '#27c383')};
+  color: ${(p) => (p.outlined ? '#27c383' : '#fff')};
+  border: 1px solid #27c383;
+  font-size: 1em;
+  font-weight: 600;
+  padding: ${(p) => p.padding || '14px 30px'};
+  border-radius: 10px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 `;
