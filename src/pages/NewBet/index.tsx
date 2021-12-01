@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IoArrowForward, IoCartOutline } from 'react-icons/io5';
 import BetItemCart from '../../components/BetItemCart';
 import GameSelector from '../../components/GameSelector';
 import Header from '../../components/Header';
 import { Button, Card } from '../../components/UI/styles';
-import { BetNumber, Cart, Container, Numbers } from './styles';
+import NumberSelector from '../../components/NumberSelector';
 
 const NewBet: React.FC = () => {
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
+
+  function handleNumberClick(num: number) {
+    setSelectedNumbers((prevSelectedNumbers) => {
+      let numbers = [...prevSelectedNumbers];
+
+      if (numbers.includes(num)) {
+        numbers.splice(numbers.indexOf(num), 1);
+      } else {
+        numbers.push(num);
+      }
+
+      return numbers;
+    });
+  }
   return (
     <Container>
       <Header showHomeLink />
@@ -29,11 +44,11 @@ const NewBet: React.FC = () => {
             </p>
           </div>
 
-          <Numbers>
-            {new Array(30).fill(null).map((_, index) => {
-              return <BetNumber key={index}>{index + 1}</BetNumber>;
-            })}
-          </Numbers>
+          <NumberSelector
+            selectedNumbers={selectedNumbers}
+            onSelectNumber={handleNumberClick}
+            bet={{ color: '#7F3992', maxNumbers: 36 }}
+          />
 
           <div className="actions">
             <Button outlined>Complete game</Button>
