@@ -13,6 +13,11 @@ export const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 10px 40px;
+    gap: 70px;
+  }
+
+  .menu-box {
+    width: 100%;
   }
 
   h1 {
@@ -37,6 +42,7 @@ export const Container = styled.div`
   nav ul {
     display: flex;
     gap: 58px;
+    justify-content: flex-end;
 
     li {
       display: flex;
