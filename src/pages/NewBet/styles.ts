@@ -63,26 +63,6 @@ export const Container = styled.div`
   }
 `;
 
-export const BetNumber = styled.div`
-  background-color: #adc0c4;
-  color: #ffffff;
-  font-size: 1.3em;
-  border-radius: 50%;
-  width: 62px;
-  height: 62px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-`;
-
-export const Numbers = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 45px;
-`;
-
 export const Cart = styled.div`
   & > div {
     min-width: 316px;

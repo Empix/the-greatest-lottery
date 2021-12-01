@@ -4,9 +4,23 @@ import BetItemCart from '../../components/BetItemCart';
 import GameSelector from '../../components/GameSelector';
 import Header from '../../components/Header';
 import { Button, Card } from '../../components/UI/styles';
+import { Cart, Container } from './styles';
 import NumberSelector from '../../components/NumberSelector';
 
+type Game = {
+  name: string;
+  color: string;
+  maxNumbers: number;
+  range: number;
+};
+
 const NewBet: React.FC = () => {
+  const [game] = useState<Game>({
+    name: 'Lotofácil',
+    color: '#7F3992',
+    maxNumbers: 10,
+    range: 36,
+  });
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
 
   function handleNumberClick(num: number) {
@@ -22,6 +36,28 @@ const NewBet: React.FC = () => {
       return numbers;
     });
   }
+
+  function handleCompleteGame() {
+    const remainingNumbers = game.maxNumbers - selectedNumbers.length - 1;
+    const numbers = new Array(remainingNumbers).fill(null).map(() => {
+      let number: number;
+
+      do {
+        number = Math.floor(Math.random() * game.range + 1);
+      } while (selectedNumbers.includes(number));
+
+      return number;
+    });
+
+    setSelectedNumbers((prevSelectedNumbers) => {
+      return [...prevSelectedNumbers, ...numbers];
+    });
+  }
+
+  function handleClearGame() {
+    setSelectedNumbers([]);
+  }
+
   return (
     <Container>
       <Header showHomeLink />
@@ -51,8 +87,12 @@ const NewBet: React.FC = () => {
           />
 
           <div className="actions">
-            <Button outlined>Complete game</Button>
-            <Button outlined>Clear game</Button>
+            <Button outlined onClick={handleCompleteGame}>
+              Complete game
+            </Button>
+            <Button outlined onClick={handleClearGame}>
+              Clear game
+            </Button>
             <Button padding="8px 30px">
               <IoCartOutline size={30} />
               <span>Add to cart</span>
