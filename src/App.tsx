@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 import Layout from './components/Layout';
 
 import Authentication from './pages/Authentication';
@@ -14,6 +14,7 @@ export default function App() {
         <Route path="/authentication" element={<Authentication />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<SignUp />} />
+        <Route path="/*" element={<Navigate to="/" />} />
       </Routes>
     </Layout>
   );
