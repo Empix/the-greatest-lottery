@@ -126,6 +126,16 @@ const NewBet: React.FC = () => {
     }
   }
 
+  function handleBetDelete(tempId: string) {
+    setCartItems((prevCartItems) => {
+      const newCartItems = prevCartItems.filter(
+        (item) => item.tempId !== tempId
+      );
+
+      return newCartItems;
+    });
+  }
+
   const canAddBetToCart = selectedNumbers.length === currentGame?.max_number;
   const totalCart = cartItems.reduce((acc, value) => {
     return acc + (value.game?.price || 0);
@@ -185,7 +195,13 @@ const NewBet: React.FC = () => {
             <ul ref={betListElement}>
               {cartItems &&
                 cartItems.map((item) => {
-                  return <BetItemCart key={item.tempId} bet={item} />;
+                  return (
+                    <BetItemCart
+                      key={item.tempId}
+                      bet={item}
+                      onDelete={handleBetDelete}
+                    />
+                  );
                 })}
             </ul>
 

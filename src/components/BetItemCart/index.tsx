@@ -5,9 +5,10 @@ import { ColorBar, Container } from './styles';
 
 type BetItemCartProps = {
   bet: Bet;
+  onDelete: (tempId: string) => void;
 };
 
-const BetItemCart: React.FC<BetItemCartProps> = ({ bet }) => {
+const BetItemCart: React.FC<BetItemCartProps> = ({ bet, onDelete }) => {
   const price = Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
@@ -16,7 +17,7 @@ const BetItemCart: React.FC<BetItemCartProps> = ({ bet }) => {
   return (
     <Container>
       <div>
-        <IoTrashOutline size={25} />
+        <IoTrashOutline size={25} onClick={() => onDelete(bet.tempId)} />
       </div>
 
       <ColorBar color={bet.game?.color || '#000'} />
