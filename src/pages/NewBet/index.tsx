@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoArrowForward, IoCartOutline } from 'react-icons/io5';
 import BetItemCart from '../../components/BetItemCart';
 import GameSelector from '../../components/GameSelector';
@@ -31,6 +31,7 @@ const NewBet: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [cartItems, setCartItems] = useState<Bet[]>([]);
   const [, setMinCartValue] = useState<number>(0);
+  const betListElement = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     api.get('/cart_games').then(({ data }) => {
@@ -85,9 +86,19 @@ const NewBet: React.FC = () => {
     ]);
   }
 
-  function handleClearGame() {
+  function clearBet() {
     setSelectedNumbers([]);
   }
+
+  function handleClearGame() {
+    clearBet();
+  }
+
+  useEffect(() => {
+    const scrollHeight = betListElement.current?.scrollHeight;
+    if (!scrollHeight) return;
+    betListElement.current?.scrollBy(0, scrollHeight);
+  }, [cartItems]);
 
   function handleAddToCart() {
     setCartItems((prevCartItems) => {
@@ -100,6 +111,8 @@ const NewBet: React.FC = () => {
         },
       ];
     });
+
+    clearBet();
   }
 
   const canAddBetToCart = selectedNumbers.length === currentGame?.max_number;
@@ -158,7 +171,7 @@ const NewBet: React.FC = () => {
           <Card>
             <h1>cart</h1>
 
-            <ul>
+            <ul ref={betListElement}>
               {cartItems &&
                 cartItems.map((item) => {
                   return <BetItemCart key={item.tempId} bet={item} />;

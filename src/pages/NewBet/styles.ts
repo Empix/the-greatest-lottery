@@ -73,6 +73,9 @@ export const Cart = styled.div`
       display: flex;
       flex-direction: column;
       gap: 32px;
+      height: 100%;
+      max-height: 250px;
+      overflow-y: auto;
     }
 
     & > h1 {
