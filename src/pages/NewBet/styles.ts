@@ -65,6 +65,8 @@ export const Container = styled.div`
 
 export const Cart = styled.div`
   & > div {
+    position: sticky;
+    top: 70px;
     min-width: 316px;
 
     & > ul {
