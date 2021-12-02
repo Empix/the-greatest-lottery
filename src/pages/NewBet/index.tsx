@@ -8,6 +8,7 @@ import { Cart, Container } from './styles';
 import NumberSelector from '../../components/NumberSelector';
 import api from '../../services/api';
 import GenerateRandom from '../../utils/randomUniqueGenerator';
+import Price from '../../components/Price';
 
 export type Game = {
   type: string;
@@ -18,15 +19,24 @@ export type Game = {
   color: string;
 };
 
+export type Bet = {
+  tempId: string;
+  game: Game | undefined;
+  numbers: number[];
+};
+
 const NewBet: React.FC = () => {
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [currentGame, setCurrentGame] = useState<Game>();
   const [games, setGames] = useState<Game[]>([]);
+  const [cartItems, setCartItems] = useState<Bet[]>([]);
+  const [minCartValue, setMinCartValue] = useState<number>(0);
 
   useEffect(() => {
     api.get('/cart_games').then(({ data }) => {
       setGames(data.types);
       setCurrentGame(data.types[0] || {});
+      setMinCartValue(data.min_cart_value);
     });
   }, []);
 
@@ -40,7 +50,7 @@ const NewBet: React.FC = () => {
         numbers.push(num);
       }
 
-      return numbers;
+      return numbers.sort((a, b) => a - b);
     });
   }
 
@@ -65,13 +75,31 @@ const NewBet: React.FC = () => {
 
     setSelectedNumbers((prevSelectedNumbers) => [
       ...prevSelectedNumbers,
-      ...numbers,
+      ...numbers.sort((a, b) => a - b),
     ]);
   }
 
   function handleClearGame() {
     setSelectedNumbers([]);
   }
+
+  function handleAddToCart() {
+    setCartItems((prevCartItems) => {
+      return [
+        ...prevCartItems,
+        {
+          tempId: Math.random().toString().split('.')[1],
+          game: currentGame,
+          numbers: selectedNumbers,
+        },
+      ];
+    });
+  }
+
+  const canAddBetToCart = selectedNumbers.length === currentGame?.max_number;
+  const totalCart = cartItems.reduce((acc, value) => {
+    return acc + (value.game?.price || 0);
+  }, 0);
 
   return (
     <Container>
@@ -109,7 +137,11 @@ const NewBet: React.FC = () => {
             <Button outlined onClick={handleClearGame}>
               Clear game
             </Button>
-            <Button padding="8px 30px">
+            <Button
+              padding="8px 30px"
+              onClick={handleAddToCart}
+              disabled={!canAddBetToCart}
+            >
               <IoCartOutline size={30} />
               <span>Add to cart</span>
             </Button>
@@ -121,27 +153,14 @@ const NewBet: React.FC = () => {
             <h1>cart</h1>
 
             <ul>
-              <BetItemCart
-                bet={{
-                  name: 'Lotofácil',
-                  color: '#7F3992',
-                  price: 2.5,
-                  numbers:
-                    '01, 02, 04, 05, 06, 07, 09, 15, 17, 20, 21, 22, 23, 24, 25',
-                }}
-              />
-              <BetItemCart
-                bet={{
-                  name: 'Mega-Sena',
-                  color: '#01AC66',
-                  price: 4.5,
-                  numbers: '01, 02, 04, 05, 06',
-                }}
-              />
+              {cartItems &&
+                cartItems.map((item) => {
+                  return <BetItemCart key={item.tempId} bet={item} />;
+                })}
             </ul>
 
             <div className="cart-total">
-              <span>cart</span> TOTAL: <span>R$ 7,00</span>
+              <span>cart</span> TOTAL: <Price value={totalCart} />
             </div>
 
             <div>

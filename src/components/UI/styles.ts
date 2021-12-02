@@ -44,4 +44,9 @@ export const Button = styled.button<ButtonProps>`
   justify-content: center;
   align-items: center;
   gap: 20px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
