@@ -48,21 +48,25 @@ const NewBet: React.FC = () => {
     setCurrentGame(games.find((game) => game.type === type));
     setSelectedNumbers([]);
   }
+
   function handleCompleteGame() {
-    const remainingNumbers = game.maxNumbers - selectedNumbers.length - 1;
-    const numbers = new Array(remainingNumbers).fill(null).map(() => {
-      let number: number;
+    if (!currentGame) return;
 
-      do {
-        number = Math.floor(Math.random() * game.range + 1);
-      } while (selectedNumbers.includes(number));
+    const numbersLeft = currentGame.max_number - selectedNumbers.length;
+    let numbers: number[] = [];
+    const numberGenerator = new GenerateRandom(
+      currentGame.range,
+      selectedNumbers
+    );
 
-      return number;
-    });
+    for (let i = 0; i < numbersLeft; i++) {
+      numbers.push(numberGenerator.next());
+    }
 
-    setSelectedNumbers((prevSelectedNumbers) => {
-      return [...prevSelectedNumbers, ...numbers];
-    });
+    setSelectedNumbers((prevSelectedNumbers) => [
+      ...prevSelectedNumbers,
+      ...numbers,
+    ]);
   }
 
   function handleClearGame() {
