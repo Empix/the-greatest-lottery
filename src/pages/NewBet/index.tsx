@@ -30,7 +30,7 @@ const NewBet: React.FC = () => {
   const [currentGame, setCurrentGame] = useState<Game>();
   const [games, setGames] = useState<Game[]>([]);
   const [cartItems, setCartItems] = useState<Bet[]>([]);
-  const [, setMinCartValue] = useState<number>(0);
+  const [minCartValue, setMinCartValue] = useState<number>(0);
   const betListElement = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
@@ -115,6 +115,17 @@ const NewBet: React.FC = () => {
     clearBet();
   }
 
+  function handleSaveBets() {
+    if (totalCart < minCartValue) {
+      alert(
+        `Você precisa atingir o valor mínimo (${Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }).format(minCartValue)}) no seu carrinho.`
+      );
+    }
+  }
+
   const canAddBetToCart = selectedNumbers.length === currentGame?.max_number;
   const totalCart = cartItems.reduce((acc, value) => {
     return acc + (value.game?.price || 0);
@@ -183,7 +194,7 @@ const NewBet: React.FC = () => {
             </div>
 
             <div>
-              <button>
+              <button onClick={handleSaveBets}>
                 <span>Save</span>
                 <IoArrowForward />
               </button>
