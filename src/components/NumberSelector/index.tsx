@@ -1,27 +1,25 @@
 import React from 'react';
+import { Game } from '../../pages/NewBet';
 import { BetNumber, Numbers } from './styles';
 
 type NumberSelectorProps = {
-  bet: {
-    color: string;
-    maxNumbers: number;
-  };
+  game: Game | undefined;
   selectedNumbers: number[];
   onSelectNumber: (num: number) => void;
 };
 
 const NumberSelector: React.FC<NumberSelectorProps> = (props) => {
-  const { bet, selectedNumbers, onSelectNumber } = props;
+  const { game, selectedNumbers, onSelectNumber } = props;
 
   return (
     <Numbers>
-      {new Array(bet.maxNumbers).fill(null).map((_, index) => {
+      {new Array(game?.range).fill(null).map((_, index) => {
         const isSelected = selectedNumbers.includes(index + 1);
 
         return (
           <BetNumber
             key={index}
-            color={bet.color}
+            color={game?.color}
             selected={isSelected}
             onClick={() => onSelectNumber(index + 1)}
           >

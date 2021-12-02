@@ -8,7 +8,7 @@ export const Numbers = styled.div`
 `;
 
 type BetNumberProps = {
-  color: string;
+  color?: string;
   selected?: boolean;
 };
 

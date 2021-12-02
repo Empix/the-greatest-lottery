@@ -7,6 +7,7 @@ import { Button, Card } from '../../components/UI/styles';
 import { Cart, Container } from './styles';
 import NumberSelector from '../../components/NumberSelector';
 import api from '../../services/api';
+import GenerateRandom from '../../utils/randomUniqueGenerator';
 
 export type Game = {
   type: string;
@@ -18,13 +19,8 @@ export type Game = {
 };
 
 const NewBet: React.FC = () => {
-  const [game] = useState<Game>({
-    name: 'Lotofácil',
-    color: '#7F3992',
-    maxNumbers: 10,
-    range: 36,
-  });
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
+  const [currentGame, setCurrentGame] = useState<Game>();
   const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
@@ -99,7 +95,7 @@ const NewBet: React.FC = () => {
           <NumberSelector
             selectedNumbers={selectedNumbers}
             onSelectNumber={handleNumberClick}
-            bet={{ color: '#7F3992', maxNumbers: 36 }}
+            game={currentGame}
           />
 
           <div className="actions">
