@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoArrowForward, IoCartOutline } from 'react-icons/io5';
 import BetItemCart from '../../components/BetItemCart';
 import GameSelector from '../../components/GameSelector';
@@ -6,12 +6,15 @@ import Header from '../../components/Header';
 import { Button, Card } from '../../components/UI/styles';
 import { Cart, Container } from './styles';
 import NumberSelector from '../../components/NumberSelector';
+import api from '../../services/api';
 
-type Game = {
-  name: string;
-  color: string;
-  maxNumbers: number;
+export type Game = {
+  type: string;
+  description: string;
   range: number;
+  price: number;
+  max_number: number;
+  color: string;
 };
 
 const NewBet: React.FC = () => {
@@ -22,6 +25,14 @@ const NewBet: React.FC = () => {
     range: 36,
   });
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
+  const [games, setGames] = useState<Game[]>([]);
+
+  useEffect(() => {
+    api.get('/cart_games').then(({ data }) => {
+      setGames(data.types);
+      setCurrentGame(data.types[0] || {});
+    });
+  }, []);
 
   function handleNumberClick(num: number) {
     setSelectedNumbers((prevSelectedNumbers) => {
@@ -37,6 +48,10 @@ const NewBet: React.FC = () => {
     });
   }
 
+  function handleSelectGame(type: string) {
+    setCurrentGame(games.find((game) => game.type === type));
+    setSelectedNumbers([]);
+  }
   function handleCompleteGame() {
     const remainingNumbers = game.maxNumbers - selectedNumbers.length - 1;
     const numbers = new Array(remainingNumbers).fill(null).map(() => {
@@ -64,20 +79,21 @@ const NewBet: React.FC = () => {
       <section>
         <div className="new-bet">
           <h1>
-            New bet <span>for mega-sena</span>
+            New bet <span>for {currentGame?.type || '...'}</span>
           </h1>
 
           <div className="game-selector">
             <h2>Choose a game</h2>
-            <GameSelector />
+            <GameSelector
+              games={games}
+              onSelectGame={handleSelectGame}
+              currentGame={currentGame}
+            />
           </div>
 
           <div className="game-info">
             <h2>Fill your bet</h2>
-            <p>
-              Mark as many numbers as you want up to a maximum of 50. Win by
-              hitting 15, 16, 17, 18, 19, 20 or none of the 20 numbers drawn.
-            </p>
+            <p>{currentGame?.description || '...'}</p>
           </div>
 
           <NumberSelector

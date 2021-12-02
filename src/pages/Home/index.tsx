@@ -2,7 +2,6 @@ import React from 'react';
 import { IoArrowForward } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import BetItem from '../../components/BetItem';
-import GameSelector from '../../components/GameSelector';
 import Header from '../../components/Header';
 import { Container, Filter } from './styles';
 
@@ -15,7 +14,7 @@ const Home: React.FC = () => {
           <h1>Recent games</h1>
           <Filter>
             <span>Filters</span>
-            <GameSelector />
+            {/* <GameSelector /> */}
           </Filter>
           <Link to="/new-bet">
             <span>New Bet</span>
