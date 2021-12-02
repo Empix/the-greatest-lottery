@@ -30,7 +30,7 @@ const NewBet: React.FC = () => {
   const [currentGame, setCurrentGame] = useState<Game>();
   const [games, setGames] = useState<Game[]>([]);
   const [cartItems, setCartItems] = useState<Bet[]>([]);
-  const [minCartValue, setMinCartValue] = useState<number>(0);
+  const [, setMinCartValue] = useState<number>(0);
 
   useEffect(() => {
     api.get('/cart_games').then(({ data }) => {
@@ -47,7 +47,13 @@ const NewBet: React.FC = () => {
       if (numbers.includes(num)) {
         numbers.splice(numbers.indexOf(num), 1);
       } else {
-        numbers.push(num);
+        if (selectedNumbers.length < (currentGame?.max_number || 0)) {
+          numbers.push(num);
+        } else {
+          alert(
+            `Você não pode selecionar mais que ${currentGame?.max_number} números nesse jogo.`
+          );
+        }
       }
 
       return numbers.sort((a, b) => a - b);
