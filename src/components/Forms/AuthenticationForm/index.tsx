@@ -49,22 +49,23 @@ const AuthenticationForm: React.FC = () => {
     })
       .then((response) => {
         if (response.status === 200) {
-          const { user, token } = response.data;
+          const { token } = response.data;
 
           dispatch(
             actions.login({
               token: token.token,
+              expiresIn: token.expires_at,
             })
           );
 
+          setIsLoading(false);
           navigate('/');
         }
       })
       .catch((err) => {
+        setIsLoading(false);
         alert(err.response.data.message);
       });
-
-    setIsLoading(false);
   }
 
   return (

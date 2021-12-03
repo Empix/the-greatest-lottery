@@ -2,10 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 
 type AuthState = {
   token: string | null;
+  expiresIn: string | null;
 };
 
 const initialState: AuthState = {
   token: localStorage.getItem('token') || null,
+  expiresIn: localStorage.getItem('token_expires_in') || null,
 };
 
 export const slice = createSlice({
@@ -14,11 +16,13 @@ export const slice = createSlice({
   reducers: {
     login(state, { payload }: { payload: AuthState }) {
       localStorage.setItem('token', payload.token || '');
-      return { token: payload.token };
+      localStorage.setItem('token_expires_in', payload.expiresIn || '');
+      return { token: payload.token, expiresIn: payload.expiresIn };
     },
     logout(state, { payload }: { payload: undefined }) {
       localStorage.removeItem('token');
-      return { token: null };
+      localStorage.removeItem('token_expires_in');
+      return { token: null, expiresIn: null };
     },
   },
 });
