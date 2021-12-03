@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import { Navigate, Route, Routes } from 'react-router';
 import Layout from './components/Layout';
 import { useAppSelector } from './hooks/redux';

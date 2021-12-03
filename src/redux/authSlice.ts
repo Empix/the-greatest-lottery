@@ -16,9 +16,9 @@ export const slice = createSlice({
       localStorage.setItem('token', payload.token || '');
       return { token: payload.token };
     },
-    logout(state, { payload }) {
+    logout(state, { payload }: { payload: undefined }) {
       localStorage.removeItem('token');
-      return { user: null, token: null };
+      return { token: null };
     },
   },
 });
