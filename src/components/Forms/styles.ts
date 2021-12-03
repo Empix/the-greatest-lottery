@@ -17,6 +17,10 @@ const BaseForm = styled.form`
     &::placeholder {
       color: #9d9d9d;
     }
+
+    &.error {
+      border-bottom: 2px solid #d84e4e;
+    }
   }
 
   button {
