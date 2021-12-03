@@ -26,7 +26,7 @@ const SignUpForm: React.FC = () => {
 
   return (
     <BaseForm onSubmit={handleRegister}>
-      <input type="text" id="name" placeholder="Name" />
+      <input type="text" id="name" placeholder="Name" required />
       <input
         type="text"
         id="email"
@@ -34,9 +34,9 @@ const SignUpForm: React.FC = () => {
         ref={emailInput}
         onChange={handleOnEmailChange}
         className={emailError ? 'error' : ''}
+        required
       />
-      <input type="password" id="password" placeholder="Password" />
-
+      <input type="password" id="password" placeholder="Password" required />
       <button>
         <span>Register</span>
         <IoArrowForward />

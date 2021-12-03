@@ -34,8 +34,9 @@ const AuthenticationForm: React.FC = () => {
         ref={emailInput}
         onChange={handleOnEmailChange}
         className={emailError ? 'error' : ''}
+        required
       />
-      <input type="password" id="password" placeholder="Password" />
+      <input type="password" id="password" placeholder="Password" required />
       <Link to="/reset-password">I forgot my password</Link>
 
       <button>

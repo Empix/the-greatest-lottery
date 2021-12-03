@@ -33,6 +33,7 @@ const ResetPasswordForm: React.FC = () => {
         ref={emailInput}
         onChange={handleOnEmailChange}
         className={emailError ? 'error' : ''}
+        required
       />
 
       <button>
