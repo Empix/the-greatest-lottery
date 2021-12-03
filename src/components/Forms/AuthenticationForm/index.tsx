@@ -1,11 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { IoArrowForward } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
+import { useAppDispatch } from '../../../hooks/redux';
+import { actions } from '../../../redux/authSlice';
+import api from '../../../services/api';
+import { Loading } from '../../Loading/styles';
 import BaseForm from './styles';
+import { useNavigate } from 'react-router';
 
 const AuthenticationForm: React.FC = () => {
+  const passwordInput = useRef<HTMLInputElement>(null);
   const emailInput = useRef<HTMLInputElement>(null);
   const [emailError, setEmailError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
 
   function handleOnEmailChange() {
     setEmailError(!isEmailValid());
@@ -16,13 +26,45 @@ const AuthenticationForm: React.FC = () => {
     return email.match(/^.+@.+(\.\w{2,3})$/);
   }
 
-  function handleLogin(event: React.FormEvent) {
+  async function handleLogin(event: React.FormEvent) {
     event.preventDefault();
 
     if (!isEmailValid()) {
       setEmailError(!isEmailValid());
       alert('Email inválido.');
+      return;
     }
+
+    const email = emailInput.current!.value;
+    const password = passwordInput.current!.value;
+
+    setIsLoading(true);
+
+    await api('/login', {
+      method: 'POST',
+      data: {
+        email,
+        password,
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          const { user, token } = response.data;
+
+          dispatch(
+            actions.login({
+              token: token.token,
+            })
+          );
+
+          navigate('/');
+        }
+      })
+      .catch((err) => {
+        alert(err.response.data.message);
+      });
+
+    setIsLoading(false);
   }
 
   return (
@@ -36,13 +78,27 @@ const AuthenticationForm: React.FC = () => {
         className={emailError ? 'error' : ''}
         required
       />
-      <input type="password" id="password" placeholder="Password" required />
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        ref={passwordInput}
+        required
+      />
       <Link to="/reset-password">I forgot my password</Link>
 
-      <button>
-        <span>Log In</span>
-        <IoArrowForward />
-      </button>
+      {!isLoading && (
+        <button>
+          <span>Log In</span>
+          <IoArrowForward />
+        </button>
+      )}
+
+      {isLoading && (
+        <div className="loadding-box">
+          <Loading />
+        </div>
+      )}
     </BaseForm>
   );
 };
