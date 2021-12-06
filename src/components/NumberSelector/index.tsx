@@ -1,6 +1,5 @@
 import React from 'react';
 import { Game } from '../../pages/NewBet';
-import { Loading } from '../Loading/styles';
 import { BetNumber, Numbers } from './styles';
 
 type NumberSelectorProps = {
