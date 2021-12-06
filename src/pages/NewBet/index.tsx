@@ -11,6 +11,7 @@ import GenerateRandom from '../../utils/randomUniqueGenerator';
 import Price from '../../components/Price';
 import { useAppSelector } from '../../hooks/redux';
 import { useNavigate } from 'react-router';
+import { Loading } from '../../components/Loading/styles';
 
 export type Game = {
   id: number;
@@ -37,13 +38,20 @@ const NewBet: React.FC = () => {
   const betListElement = useRef<HTMLUListElement>(null);
   const auth = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isGamesLoading, setIsGamesLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    api.get('/cart_games').then(({ data }) => {
-      setGames(data.types);
-      setCurrentGame(data.types[0] || {});
-      setMinCartValue(data.min_cart_value);
-    });
+    setIsGamesLoading(true);
+
+    api
+      .get('/cart_games')
+      .then(({ data }) => {
+        setGames(data.types);
+        setCurrentGame(data.types[0] || {});
+        setMinCartValue(data.min_cart_value);
+      })
+      .then(() => setIsGamesLoading(false));
   }, []);
 
   function handleNumberClick(num: number) {
@@ -128,7 +136,11 @@ const NewBet: React.FC = () => {
           currency: 'BRL',
         }).format(minCartValue)}) no seu carrinho.`
       );
+
+      return;
     }
+
+    setIsLoading(true);
 
     const games = cartItems.map((item) => {
       return {
@@ -183,13 +195,16 @@ const NewBet: React.FC = () => {
               onSelectGame={handleSelectGame}
               currentGame={currentGame}
             />
+            {isGamesLoading && <Loading color="#27c383" bgColor="#fff" />}
           </div>
 
           <div className="game-info">
             <h2>Fill your bet</h2>
-            <p>{currentGame?.description || '...'}</p>
+            <p>{currentGame?.description || ''}</p>
+            {isGamesLoading && <Loading color="#27c383" bgColor="#fff" />}
           </div>
 
+          {isGamesLoading && <Loading color="#27c383" bgColor="#fff" />}
           <NumberSelector
             selectedNumbers={selectedNumbers}
             onSelectNumber={handleNumberClick}
@@ -236,10 +251,13 @@ const NewBet: React.FC = () => {
             </div>
 
             <div>
-              <button onClick={handleSaveBets}>
-                <span>Save</span>
-                <IoArrowForward />
-              </button>
+              {!isLoading && (
+                <button onClick={handleSaveBets}>
+                  <span>Save</span>
+                  <IoArrowForward />
+                </button>
+              )}
+              {isLoading && <Loading color="#27c383" bgColor="#fff" />}
             </div>
           </Card>
         </Cart>

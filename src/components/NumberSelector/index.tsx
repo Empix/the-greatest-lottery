@@ -1,5 +1,6 @@
 import React from 'react';
 import { Game } from '../../pages/NewBet';
+import { Loading } from '../Loading/styles';
 import { BetNumber, Numbers } from './styles';
 
 type NumberSelectorProps = {
@@ -13,7 +14,7 @@ const NumberSelector: React.FC<NumberSelectorProps> = (props) => {
 
   return (
     <Numbers>
-      {new Array(game?.range).fill(null).map((_, index) => {
+      {new Array(game?.range || 0).fill(null).map((_, index, arr) => {
         const isSelected = selectedNumbers.includes(index + 1);
 
         return (
