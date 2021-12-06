@@ -96,7 +96,7 @@ const AuthenticationForm: React.FC = () => {
       )}
 
       {isLoading && (
-        <div className="loadding-box">
+        <div className="loading-box">
           <Loading />
         </div>
       )}

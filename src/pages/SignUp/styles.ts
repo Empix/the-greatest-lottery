@@ -20,7 +20,7 @@ export const Box = styled.div`
     font-weight: 600;
   }
 
-  div {
+  & > div {
     min-width: 352px;
     box-shadow: 0px 3px 25px #00000014;
   }

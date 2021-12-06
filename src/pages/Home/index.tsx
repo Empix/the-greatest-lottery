@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IoArrowForward } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import BetItem from '../../components/BetItem';
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<Game | undefined>(undefined);
   const auth = useAppSelector((state) => state.auth);
 
-  function getBets() {
+  const getBets = useCallback(() => {
     const filter = {
       params: {
         'type[]': selectedGame?.type,
@@ -43,7 +43,7 @@ const Home: React.FC = () => {
       .then((response) => {
         setBets(response.data);
       });
-  }
+  }, [auth.token, selectedGame]);
 
   useEffect(() => {
     getBets();
@@ -51,11 +51,11 @@ const Home: React.FC = () => {
     api.get('/cart_games').then((response) => {
       setGames(response.data.types);
     });
-  }, []);
+  }, [getBets]);
 
   useEffect(() => {
     getBets();
-  }, [selectedGame]);
+  }, [getBets]);
 
   function handleSelectGame(id: number) {
     let game = games.find((game) => game.id === id);

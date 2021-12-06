@@ -39,6 +39,10 @@ const BaseForm = styled.form`
     align-items: center;
     gap: 16 px;
   }
+
+  .loading-box {
+    margin-bottom: 26px;
+  }
 `;
 
 export default BaseForm;

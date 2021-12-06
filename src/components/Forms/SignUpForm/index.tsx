@@ -1,10 +1,20 @@
 import React, { useRef, useState } from 'react';
 import { IoArrowForward } from 'react-icons/io5';
-import BaseForm from '../styles';
+import { useNavigate } from 'react-router';
+import { useAppDispatch } from '../../../hooks/redux';
+import { actions } from '../../../redux/authSlice';
+import api from '../../../services/api';
+import { Loading } from '../../Loading/styles';
+import BaseForm from './styles';
 
 const SignUpForm: React.FC = () => {
+  const nameInput = useRef<HTMLInputElement>(null);
+  const passwordInput = useRef<HTMLInputElement>(null);
   const emailInput = useRef<HTMLInputElement>(null);
   const [emailError, setEmailError] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   function handleOnEmailChange() {
     setEmailError(!isEmailValid());
@@ -21,12 +31,44 @@ const SignUpForm: React.FC = () => {
     if (!isEmailValid()) {
       setEmailError(!isEmailValid());
       alert('Email inválido.');
+      return;
     }
+
+    setIsLoading(true);
+
+    const user = {
+      email: emailInput.current!.value,
+      password: passwordInput.current!.value,
+      name: nameInput.current!.value,
+    };
+
+    api
+      .post('/user/create', user)
+      .then((response) => {
+        dispatch(
+          actions.login({
+            token: response.data.token.token,
+            expiresIn: response.data.token.expires_at,
+          })
+        );
+
+        navigate('/');
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        alert(err.response.data.error.message);
+      });
   }
 
   return (
     <BaseForm onSubmit={handleRegister}>
-      <input type="text" id="name" placeholder="Name" required />
+      <input
+        type="text"
+        id="name"
+        placeholder="Name"
+        required
+        ref={nameInput}
+      />
       <input
         type="text"
         id="email"
@@ -36,11 +78,26 @@ const SignUpForm: React.FC = () => {
         className={emailError ? 'error' : ''}
         required
       />
-      <input type="password" id="password" placeholder="Password" required />
-      <button>
-        <span>Register</span>
-        <IoArrowForward />
-      </button>
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        required
+        ref={passwordInput}
+      />
+
+      {!isLoading && (
+        <button>
+          <span>Register</span>
+          <IoArrowForward />
+        </button>
+      )}
+
+      {isLoading && (
+        <div className="loading-box">
+          <Loading />
+        </div>
+      )}
     </BaseForm>
   );
 };
