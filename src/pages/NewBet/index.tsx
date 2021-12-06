@@ -10,6 +10,7 @@ import api from '../../services/api';
 import GenerateRandom from '../../utils/randomUniqueGenerator';
 import Price from '../../components/Price';
 import { useAppSelector } from '../../hooks/redux';
+import { useNavigate } from 'react-router';
 
 export type Game = {
   id: number;
@@ -35,6 +36,7 @@ const NewBet: React.FC = () => {
   const [minCartValue, setMinCartValue] = useState<number>(0);
   const betListElement = useRef<HTMLUListElement>(null);
   const auth = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/cart_games').then(({ data }) => {
@@ -118,7 +120,7 @@ const NewBet: React.FC = () => {
     clearBet();
   }
 
-  function handleSaveBets() {
+  async function handleSaveBets() {
     if (totalCart < minCartValue) {
       alert(
         `Você precisa atingir o valor mínimo (${Intl.NumberFormat('pt-BR', {
@@ -135,7 +137,7 @@ const NewBet: React.FC = () => {
       };
     });
 
-    api.post(
+    await api.post(
       '/bet/new-bet',
       {
         games,
@@ -146,6 +148,8 @@ const NewBet: React.FC = () => {
         },
       }
     );
+
+    navigate('/');
   }
 
   function handleBetDelete(tempId: string) {
