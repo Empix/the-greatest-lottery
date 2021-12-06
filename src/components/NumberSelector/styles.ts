@@ -5,6 +5,7 @@ export const Numbers = styled.div`
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 45px;
+  justify-content: center;
 `;
 
 type BetNumberProps = {

@@ -12,6 +12,10 @@ export const Container = styled.div`
     padding: 70px 40px;
     display: flex;
     gap: 35px;
+
+    @media only screen and (max-width: 805px) {
+      flex-direction: column;
+    }
   }
 
   .new-bet {
@@ -36,6 +40,10 @@ export const Container = styled.div`
     }
 
     margin-bottom: 28px;
+
+    & > div {
+      flex-wrap: wrap;
+    }
   }
 
   .game-info {
@@ -59,6 +67,15 @@ export const Container = styled.div`
 
     button:last-child {
       margin-left: auto;
+    }
+
+    @media only screen and (max-width: 1025px) {
+      flex-direction: column;
+      gap: 18px;
+
+      button:last-child {
+        margin-left: 0;
+      }
     }
   }
 `;
@@ -126,6 +143,10 @@ export const Cart = styled.div`
         align-items: center;
         gap: 18px;
       }
+    }
+
+    @media only screen and (max-width: 410px) {
+      min-width: 100px;
     }
   }
 `;
