@@ -23,11 +23,19 @@ type Bet = {
 const Home: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [bets, setBets] = useState<Bet[]>([]);
+  const [selectedGame, setSelectedGame] = useState<Game | undefined>(undefined);
   const auth = useAppSelector((state) => state.auth);
 
-  useEffect(() => {
+  function getBets() {
+    const filter = {
+      params: {
+        'type[]': selectedGame?.type,
+      },
+    };
+
     api
       .get('/bet/all-bets', {
+        ...(selectedGame && filter),
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
@@ -35,11 +43,28 @@ const Home: React.FC = () => {
       .then((response) => {
         setBets(response.data);
       });
+  }
+
+  useEffect(() => {
+    getBets();
 
     api.get('/cart_games').then((response) => {
       setGames(response.data.types);
     });
   }, []);
+
+  useEffect(() => {
+    getBets();
+  }, [selectedGame]);
+
+  function handleSelectGame(id: number) {
+    let game = games.find((game) => game.id === id);
+    if (selectedGame?.id === game?.id) {
+      game = undefined;
+    }
+
+    setSelectedGame(game);
+  }
 
   return (
     <Container>
@@ -51,8 +76,8 @@ const Home: React.FC = () => {
             <span>Filters</span>
             <GameSelector
               games={games}
-              currentGame={games[0]}
-              onSelectGame={() => {}}
+              currentGame={selectedGame}
+              onSelectGame={handleSelectGame}
             />
           </Filter>
           <Link to="/new-bet">
