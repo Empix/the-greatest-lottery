@@ -7,4 +7,8 @@ export const Container = styled.footer`
   font-size: 1em;
   padding: 35px 0;
   text-align: center;
+
+  @media only screen and (max-width: 280px) {
+    font-size: 12px;
+  }
 `;

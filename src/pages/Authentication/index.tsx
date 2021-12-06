@@ -13,6 +13,7 @@ const Authentication: React.FC = () => {
   return (
     <Container>
       <AppTitle />
+      <hr />
       <Box>
         <h1>Authentication</h1>
 

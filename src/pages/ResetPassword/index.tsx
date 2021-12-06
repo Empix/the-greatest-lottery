@@ -13,6 +13,7 @@ const ResetPassword: React.FC = () => {
   return (
     <Container>
       <AppTitle />
+      <hr />
       <Box>
         <h1>Reset password</h1>
 

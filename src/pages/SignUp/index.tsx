@@ -13,6 +13,7 @@ const SignUp: React.FC = () => {
   return (
     <Container>
       <AppTitle />
+      <hr />
       <Box>
         <h1>Registration</h1>
 

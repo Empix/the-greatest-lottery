@@ -29,4 +29,12 @@ export const Container = styled.div`
     border-radius: 100px;
     font-weight: 600;
   }
+
+  @media only screen and (max-width: 375px) {
+    font-size: 12px;
+  }
+
+  @media only screen and (max-width: 280px) {
+    font-size: 8px;
+  }
 `;
