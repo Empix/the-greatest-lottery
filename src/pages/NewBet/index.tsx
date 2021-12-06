@@ -234,6 +234,9 @@ const NewBet: React.FC = () => {
             <h1>cart</h1>
 
             <ul ref={betListElement}>
+              {cartItems.length === 0 && (
+                <div className="empty-cart">Carrinho vazio.</div>
+              )}
               {cartItems &&
                 cartItems.map((item) => {
                   return (

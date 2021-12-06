@@ -64,6 +64,11 @@ export const Container = styled.div`
 `;
 
 export const Cart = styled.div`
+  .empty-cart {
+    text-align: center;
+    color: #707070;
+  }
+
   & > div {
     position: sticky;
     top: 70px;
