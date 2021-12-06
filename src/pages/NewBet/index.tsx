@@ -9,8 +9,10 @@ import NumberSelector from '../../components/NumberSelector';
 import api from '../../services/api';
 import GenerateRandom from '../../utils/randomUniqueGenerator';
 import Price from '../../components/Price';
+import { useAppSelector } from '../../hooks/redux';
 
 export type Game = {
+  id: number;
   type: string;
   description: string;
   range: number;
@@ -32,6 +34,7 @@ const NewBet: React.FC = () => {
   const [cartItems, setCartItems] = useState<Bet[]>([]);
   const [minCartValue, setMinCartValue] = useState<number>(0);
   const betListElement = useRef<HTMLUListElement>(null);
+  const auth = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     api.get('/cart_games').then(({ data }) => {
@@ -61,8 +64,8 @@ const NewBet: React.FC = () => {
     });
   }
 
-  function handleSelectGame(type: string) {
-    setCurrentGame(games.find((game) => game.type === type));
+  function handleSelectGame(id: number) {
+    setCurrentGame(games.find((game) => game.id === id));
     setSelectedNumbers([]);
   }
 
@@ -124,6 +127,25 @@ const NewBet: React.FC = () => {
         }).format(minCartValue)}) no seu carrinho.`
       );
     }
+
+    const games = cartItems.map((item) => {
+      return {
+        id: item.game?.id,
+        numbers: item.numbers,
+      };
+    });
+
+    api.post(
+      '/bet/new-bet',
+      {
+        games,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      }
+    );
   }
 
   function handleBetDelete(tempId: string) {

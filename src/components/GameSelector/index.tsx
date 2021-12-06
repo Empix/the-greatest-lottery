@@ -6,21 +6,21 @@ import { Container } from './styles';
 type GameSelectorProps = {
   games: Game[];
   currentGame: Game | undefined;
-  onSelectGame: (type: string) => void;
+  onSelectGame: (id: number) => void;
 };
 
 const GameSelector: React.FC<GameSelectorProps> = (props) => {
   return (
     <Container>
-      {props.games.map(({ type, color }) => {
-        const isActived = props.currentGame?.type === type;
+      {props.games.map(({ id, type, color }) => {
+        const isActived = props.currentGame?.id === id;
 
         return (
           <GameButton
-            key={type}
+            key={id}
             actived={isActived}
             color={color}
-            onClick={() => props.onSelectGame(type)}
+            onClick={() => props.onSelectGame(id)}
           >
             {type}
           </GameButton>
