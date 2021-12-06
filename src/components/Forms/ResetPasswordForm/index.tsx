@@ -1,10 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { IoArrowForward } from 'react-icons/io5';
-import BaseForm from '../styles';
+import { useNavigate } from 'react-router';
+import api from '../../../services/api';
+import { Loading } from '../../Loading/styles';
+import BaseForm from './styles';
 
 const ResetPasswordForm: React.FC = () => {
   const emailInput = useRef<HTMLInputElement>(null);
   const [emailError, setEmailError] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   function handleOnEmailChange() {
     setEmailError(!isEmailValid());
@@ -21,7 +26,22 @@ const ResetPasswordForm: React.FC = () => {
     if (!isEmailValid()) {
       setEmailError(!isEmailValid());
       alert('Email inválido.');
+      return;
     }
+
+    setIsLoading(true);
+    api
+      .post('/reset', {
+        email: emailInput.current?.value,
+      })
+      .then((response) => {
+        alert('Um token para recuperação da senha foi enviado para você.');
+        navigate('/authentication');
+      })
+      .catch((err) => {
+        alert(err.response.data.message);
+        setIsLoading(false);
+      });
   }
 
   return (
@@ -36,10 +56,18 @@ const ResetPasswordForm: React.FC = () => {
         required
       />
 
-      <button>
-        <span>Send link</span>
-        <IoArrowForward />
-      </button>
+      {!isLoading && (
+        <button>
+          <span>Send link</span>
+          <IoArrowForward />
+        </button>
+      )}
+
+      {isLoading && (
+        <div className="loading-box">
+          <Loading />
+        </div>
+      )}
     </BaseForm>
   );
 };
