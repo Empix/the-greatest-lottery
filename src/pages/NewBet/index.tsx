@@ -51,7 +51,16 @@ const NewBet: React.FC = () => {
         setCurrentGame(data.types[0] || {});
         setMinCartValue(data.min_cart_value);
       })
-      .then(() => setIsGamesLoading(false));
+      .then(() => setIsGamesLoading(false))
+      .catch((err) => {
+        setIsGamesLoading(false);
+        if (!err.response || err.response.status >= 500) {
+          alert('Um erro desconhecido ocorreu ao tentar buscar os jogos!');
+          return;
+        }
+
+        alert(err.response.data.message);
+      });
   }, []);
 
   function handleNumberClick(num: number) {
@@ -149,17 +158,27 @@ const NewBet: React.FC = () => {
       };
     });
 
-    await api.post(
-      '/bet/new-bet',
-      {
-        games,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${auth.token}`,
+    await api
+      .post(
+        '/bet/new-bet',
+        {
+          games,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      )
+      .catch((err) => {
+        setIsGamesLoading(false);
+        if (!err.response || err.response.status >= 500) {
+          alert('Um erro desconhecido ocorreu ao tentar salvar as apostas!');
+          return;
+        }
+
+        alert(err.response.data.message);
+      });
 
     navigate('/');
   }

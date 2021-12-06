@@ -39,8 +39,13 @@ const ResetPasswordForm: React.FC = () => {
         navigate('/authentication');
       })
       .catch((err) => {
-        alert(err.response.data.message);
         setIsLoading(false);
+        if (!err.response || err.response.status >= 500) {
+          alert('Um erro desconhecido ocorreu!');
+          return;
+        }
+
+        alert(err.response.data.message);
       });
   }
 

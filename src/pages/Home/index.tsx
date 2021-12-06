@@ -31,10 +31,21 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     setIsGamesLoading(true);
-    api.get('/cart_games').then((response) => {
-      setIsGamesLoading(false);
-      setGames(response.data.types);
-    });
+    api
+      .get('/cart_games')
+      .then((response) => {
+        setIsGamesLoading(false);
+        setGames(response.data.types);
+      })
+      .catch((err) => {
+        setIsGamesLoading(false);
+        if (!err.response || err.response.status >= 500) {
+          alert('Um erro desconhecido ocorreu ao tentar buscar os jogos!');
+          return;
+        }
+
+        alert(err.response.data.message);
+      });
   }, []);
 
   useEffect(() => {
@@ -55,6 +66,15 @@ const Home: React.FC = () => {
       .then((response) => {
         setIsBetsLoading(false);
         setBets(response.data);
+      })
+      .catch((err) => {
+        setIsBetsLoading(false);
+        if (!err.response || err.response.status >= 500) {
+          alert('Um erro desconhecido ocorreu ao tentar buscar as apostas!');
+          return;
+        }
+
+        alert(err.response.data.message);
       });
   }, [auth.token, selectedGame]);
 

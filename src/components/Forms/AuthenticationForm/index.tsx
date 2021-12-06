@@ -64,6 +64,11 @@ const AuthenticationForm: React.FC = () => {
       })
       .catch((err) => {
         setIsLoading(false);
+        if (!err.response || err.response.status >= 500) {
+          alert('Um erro desconhecido ocorreu!');
+          return;
+        }
+
         alert(err.response.data.message);
       });
   }
