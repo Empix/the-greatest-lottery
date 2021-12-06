@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoArrowForward } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import BetItem from '../../components/BetItem';
 import GameSelector from '../../components/GameSelector';
 import Header from '../../components/Header';
+import { Loading } from '../../components/Loading/styles';
 import { useAppSelector } from '../../hooks/redux';
 import api from '../../services/api';
 import { Game } from '../NewBet';
@@ -24,15 +25,26 @@ const Home: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [bets, setBets] = useState<Bet[]>([]);
   const [selectedGame, setSelectedGame] = useState<Game | undefined>(undefined);
+  const [isGamesLoading, setIsGamesLoading] = useState<boolean>(false);
+  const [isBetsLoading, setIsBetsLoading] = useState<boolean>(false);
   const auth = useAppSelector((state) => state.auth);
 
-  const getBets = useCallback(() => {
+  useEffect(() => {
+    setIsGamesLoading(true);
+    api.get('/cart_games').then((response) => {
+      setIsGamesLoading(false);
+      setGames(response.data.types);
+    });
+  }, []);
+
+  useEffect(() => {
     const filter = {
       params: {
         'type[]': selectedGame?.type,
       },
     };
 
+    setIsBetsLoading(true);
     api
       .get('/bet/all-bets', {
         ...(selectedGame && filter),
@@ -41,21 +53,10 @@ const Home: React.FC = () => {
         },
       })
       .then((response) => {
+        setIsBetsLoading(false);
         setBets(response.data);
       });
   }, [auth.token, selectedGame]);
-
-  useEffect(() => {
-    getBets();
-
-    api.get('/cart_games').then((response) => {
-      setGames(response.data.types);
-    });
-  }, [getBets]);
-
-  useEffect(() => {
-    getBets();
-  }, [getBets]);
 
   function handleSelectGame(id: number) {
     let game = games.find((game) => game.id === id);
@@ -74,11 +75,15 @@ const Home: React.FC = () => {
           <h1>Recent games</h1>
           <Filter>
             <span>Filters</span>
-            <GameSelector
-              games={games}
-              currentGame={selectedGame}
-              onSelectGame={handleSelectGame}
-            />
+            {!isGamesLoading && (
+              <GameSelector
+                games={games}
+                currentGame={selectedGame}
+                onSelectGame={handleSelectGame}
+              />
+            )}
+
+            {isGamesLoading && <Loading />}
           </Filter>
           <Link to="/new-bet">
             <span>New Bet</span>
@@ -86,7 +91,9 @@ const Home: React.FC = () => {
           </Link>
         </header>
         <ul>
+          {isBetsLoading && <Loading />}
           {bets &&
+            !isBetsLoading &&
             bets.map((bet) => {
               return (
                 <BetItem
