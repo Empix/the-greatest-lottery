@@ -41,10 +41,12 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/*" element={<Navigate to="/authentication" />} />
 
-        {auth.token && [
-          <Route path="/" element={<Home />} />,
-          <Route path="/new-bet" element={<NewBet />} />,
-        ]}
+        {auth.token && (
+          <>
+            <Route path="/" element={<Home />} />
+            <Route path="/new-bet" element={<NewBet />} />
+          </>
+        )}
       </Routes>
     </Layout>
   );
