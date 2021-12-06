@@ -112,6 +112,9 @@ const Home: React.FC = () => {
         </header>
         <ul>
           {isBetsLoading && <Loading />}
+          {!isBetsLoading && bets.length === 0 && (
+            <p className="empty-bets">Nenhuma aposta encontrada.</p>
+          )}
           {bets &&
             !isBetsLoading &&
             bets.map((bet) => {
