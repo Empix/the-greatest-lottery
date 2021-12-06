@@ -40,6 +40,16 @@ export const Container = styled.div`
           font-style: italic;
         }
       }
+
+      @media only screen and (max-width: 918px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+
+        & > a {
+          margin-left: 0;
+        }
+      }
     }
 
     ul {
@@ -60,5 +70,18 @@ export const Filter = styled.div`
     color: #868686;
     font-weight: 400;
     font-style: italic;
+  }
+
+  & > div {
+    flex-wrap: wrap;
+  }
+
+  @media only screen and (max-width: 918px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    & > div {
+      flex-wrap: wrap;
+    }
   }
 `;

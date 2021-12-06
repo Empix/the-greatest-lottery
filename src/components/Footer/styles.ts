@@ -9,6 +9,6 @@ export const Container = styled.footer`
   text-align: center;
 
   @media only screen and (max-width: 280px) {
-    font-size: 12px;
+    font-size: 14px;
   }
 `;

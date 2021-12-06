@@ -35,7 +35,7 @@ type ColorBarProps = {
 };
 
 export const ColorBar = styled.div<ColorBarProps>`
-  width: 6px;
+  min-width: 6px;
   background-color: ${(p) => p.color};
   border-radius: 50px;
 `;

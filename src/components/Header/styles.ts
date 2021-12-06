@@ -5,6 +5,7 @@ export const Container = styled.div`
   border-bottom: 2px solid #ebebeb;
   display: flex;
   justify-content: center;
+  position: relative;
 
   & > div {
     width: 100%;
@@ -14,6 +15,10 @@ export const Container = styled.div`
     align-items: center;
     padding: 10px 40px;
     gap: 70px;
+
+    @media only screen and (max-width: 605px) {
+      gap: 20px;
+    }
   }
 
   .menu-box {
@@ -33,7 +38,7 @@ export const Container = styled.div`
       background-color: #b5c401;
       border-radius: 6px;
       position: absolute;
-      z-index: 1;
+      z-index: 10;
       bottom: -14px;
       left: -3px;
     }
@@ -43,6 +48,10 @@ export const Container = styled.div`
     display: flex;
     gap: 58px;
     justify-content: flex-end;
+
+    .home-link {
+      margin-right: auto;
+    }
 
     li {
       display: flex;
@@ -72,6 +81,32 @@ export const Container = styled.div`
           color: #707070;
         }
       }
+    }
+
+    @media only screen and (max-width: 605px) {
+      position: absolute;
+      top: 75px;
+      left: 0;
+      flex-direction: column;
+      z-index: 9;
+      background-color: white;
+      width: 100%;
+      gap: 16px;
+      padding: 25px 0;
+      border-bottom: 2px solid #ebebeb;
+
+      .home-link {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .hamburguer-menu {
+    display: none;
+    cursor: pointer;
+
+    @media only screen and (max-width: 605px) {
+      display: block;
     }
   }
 `;
