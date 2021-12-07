@@ -1,17 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { IoArrowForward, IoCartOutline } from 'react-icons/io5';
+import { useAppSelector } from '../../hooks/redux';
+import { useNavigate } from 'react-router';
+
 import BetItemCart from '../../components/BetItemCart';
 import GameSelector from '../../components/GameSelector';
 import Header from '../../components/Header';
-import { Button, Card } from '../../components/UI/styles';
-import { Cart, Container } from './styles';
 import NumberSelector from '../../components/NumberSelector';
-import api from '../../services/api';
-import GenerateRandom from '../../utils/randomUniqueGenerator';
 import Price from '../../components/Price';
-import { useAppSelector } from '../../hooks/redux';
-import { useNavigate } from 'react-router';
+import NewBetActions from '../../components/NewBetActions';
+import { Card } from '../../components/UI/styles';
 import { Loading } from '../../components/Loading/styles';
+
+import { Cart, Container } from './styles';
+
+import { IoArrowForward } from 'react-icons/io5';
+
+import GenerateRandom from '../../utils/randomUniqueGenerator';
+import api from '../../services/api';
 
 export type Game = {
   id: number;
@@ -230,22 +235,12 @@ const NewBet: React.FC = () => {
             game={currentGame}
           />
 
-          <div className="actions">
-            <Button outlined onClick={handleCompleteGame}>
-              Complete game
-            </Button>
-            <Button outlined onClick={handleClearGame}>
-              Clear game
-            </Button>
-            <Button
-              padding="8px 30px"
-              onClick={handleAddToCart}
-              disabled={!canAddBetToCart}
-            >
-              <IoCartOutline size={30} />
-              <span>Add to cart</span>
-            </Button>
-          </div>
+          <NewBetActions
+            handleCompleteGame={handleCompleteGame}
+            handleClearGame={handleClearGame}
+            handleAddToCart={handleAddToCart}
+            canAddBetToCart={canAddBetToCart}
+          />
         </div>
 
         <Cart>
