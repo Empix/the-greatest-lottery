@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { IoArrowForward } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
-import BetItem from '../../components/BetItem';
+import { useAppSelector } from '../../hooks/redux';
+
+import BetList from '../../components/BetList';
 import GameSelector from '../../components/GameSelector';
 import Header from '../../components/Header';
+import { Link } from 'react-router-dom';
 import { Loading } from '../../components/Loading/styles';
-import { useAppSelector } from '../../hooks/redux';
-import api from '../../services/api';
-import { Game } from '../NewBet';
+
 import { Container, Filter } from './styles';
 
-type Bet = {
+import { Game } from '../NewBet';
+
+import { IoArrowForward } from 'react-icons/io5';
+import api from '../../services/api';
+
+export type Bet = {
   id: number;
   choosen_numbers: string;
   price: number;
@@ -110,30 +114,7 @@ const Home: React.FC = () => {
             <IoArrowForward size={35} />
           </Link>
         </header>
-        <ul>
-          {isBetsLoading && <Loading />}
-          {!isBetsLoading && bets.length === 0 && (
-            <p className="empty-bets">Nenhuma aposta encontrada.</p>
-          )}
-          {bets &&
-            !isBetsLoading &&
-            bets.map((bet) => {
-              return (
-                <BetItem
-                  key={bet.id}
-                  bet={{
-                    name: bet.type.type,
-                    color:
-                      games.find((game) => game.id === bet.type.id)?.color ||
-                      '#707070',
-                    price: bet.price,
-                    date: new Date(bet.created_at),
-                    numbers: bet.choosen_numbers.replaceAll(',', ', '),
-                  }}
-                />
-              );
-            })}
-        </ul>
+        <BetList isBetsLoading={isBetsLoading} bets={bets} games={games} />
       </section>
     </Container>
   );
