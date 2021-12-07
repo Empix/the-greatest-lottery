@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoTrashOutline } from 'react-icons/io5';
-import { Bet } from '../../pages/NewBet';
+import { Bet } from '../../redux/cartSlice';
 import { ColorBar, Container } from './styles';
 
 type BetItemCartProps = {

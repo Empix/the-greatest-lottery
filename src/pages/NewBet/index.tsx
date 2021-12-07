@@ -1,22 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useAppSelector } from '../../hooks/redux';
-import { useNavigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch } from '../../hooks/redux';
 
-import BetItemCart from '../../components/BetItemCart';
 import GameSelector from '../../components/GameSelector';
 import Header from '../../components/Header';
 import NumberSelector from '../../components/NumberSelector';
-import Price from '../../components/Price';
 import NewBetActions from '../../components/NewBetActions';
-import { Card } from '../../components/UI/styles';
 import { Loading } from '../../components/Loading/styles';
+import Cart from '../../components/Cart';
 
-import { Cart, Container } from './styles';
-
-import { IoArrowForward } from 'react-icons/io5';
+import { Container } from './styles';
 
 import GenerateRandom from '../../utils/randomUniqueGenerator';
 import api from '../../services/api';
+import { actions } from '../../redux/cartSlice';
 
 export type Game = {
   id: number;
@@ -28,23 +24,13 @@ export type Game = {
   color: string;
 };
 
-export type Bet = {
-  tempId: string;
-  game: Game | undefined;
-  numbers: number[];
-};
-
 const NewBet: React.FC = () => {
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [currentGame, setCurrentGame] = useState<Game>();
   const [games, setGames] = useState<Game[]>([]);
-  const [cartItems, setCartItems] = useState<Bet[]>([]);
   const [minCartValue, setMinCartValue] = useState<number>(0);
-  const betListElement = useRef<HTMLUListElement>(null);
-  const auth = useAppSelector((state) => state.auth);
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isGamesLoading, setIsGamesLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setIsGamesLoading(true);
@@ -121,87 +107,19 @@ const NewBet: React.FC = () => {
     clearBet();
   }
 
-  useEffect(() => {
-    const scrollHeight = betListElement.current?.scrollHeight;
-    if (!scrollHeight) return;
-    betListElement.current?.scrollBy(0, scrollHeight);
-  }, [cartItems]);
-
   function handleAddToCart() {
-    setCartItems((prevCartItems) => {
-      return [
-        ...prevCartItems,
-        {
-          tempId: Math.random().toString().split('.')[1],
-          game: currentGame,
-          numbers: selectedNumbers,
-        },
-      ];
-    });
+    dispatch(
+      actions.addItem({
+        tempId: Math.random().toString().split('.')[1],
+        game: currentGame,
+        numbers: selectedNumbers,
+      })
+    );
 
     clearBet();
   }
 
-  async function handleSaveBets() {
-    if (totalCart < minCartValue) {
-      alert(
-        `Você precisa atingir o valor mínimo (${Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }).format(minCartValue)}) no seu carrinho.`
-      );
-
-      return;
-    }
-
-    setIsLoading(true);
-
-    const games = cartItems.map((item) => {
-      return {
-        id: item.game?.id,
-        numbers: item.numbers,
-      };
-    });
-
-    await api
-      .post(
-        '/bet/new-bet',
-        {
-          games,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        }
-      )
-      .catch((err) => {
-        setIsGamesLoading(false);
-        if (!err.response || err.response.status >= 500) {
-          alert('Um erro desconhecido ocorreu ao tentar salvar as apostas!');
-          return;
-        }
-
-        alert(err.response.data.message);
-      });
-
-    navigate('/');
-  }
-
-  function handleBetDelete(tempId: string) {
-    setCartItems((prevCartItems) => {
-      const newCartItems = prevCartItems.filter(
-        (item) => item.tempId !== tempId
-      );
-
-      return newCartItems;
-    });
-  }
-
   const canAddBetToCart = selectedNumbers.length === currentGame?.max_number;
-  const totalCart = cartItems.reduce((acc, value) => {
-    return acc + (value.game?.price || 0);
-  }, 0);
 
   return (
     <Container>
@@ -243,41 +161,7 @@ const NewBet: React.FC = () => {
           />
         </div>
 
-        <Cart>
-          <Card>
-            <h1>cart</h1>
-
-            <ul ref={betListElement}>
-              {cartItems.length === 0 && (
-                <div className="empty-cart">Carrinho vazio.</div>
-              )}
-              {cartItems &&
-                cartItems.map((item) => {
-                  return (
-                    <BetItemCart
-                      key={item.tempId}
-                      bet={item}
-                      onDelete={handleBetDelete}
-                    />
-                  );
-                })}
-            </ul>
-
-            <div className="cart-total">
-              <span>cart</span> TOTAL: <Price value={totalCart} />
-            </div>
-
-            <div>
-              {!isLoading && (
-                <button onClick={handleSaveBets}>
-                  <span>Save</span>
-                  <IoArrowForward />
-                </button>
-              )}
-              {isLoading && <Loading color="#27c383" bgColor="#fff" />}
-            </div>
-          </Card>
-        </Cart>
+        <Cart minCartValue={minCartValue} />
       </section>
     </Container>
   );
